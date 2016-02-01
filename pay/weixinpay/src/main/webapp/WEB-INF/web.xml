@@ -10,8 +10,18 @@
   	<description></description>
   	<servlet-class>com.pinelet.weixinpay.servlet.MainService</servlet-class>
   </servlet>
+  <servlet>
+  	<servlet-name>VaildService</servlet-name>
+  	<display-name>VaildService</display-name>
+  	<description></description>
+  	<servlet-class>com.pinelet.weixinpay.servlet.VaildService</servlet-class>
+  </servlet>
   <servlet-mapping>
   	<servlet-name>MainService</servlet-name>
-  	<url-pattern>/wx/mainservice</url-pattern>
+  	<url-pattern>/wx/main</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+  	<servlet-name>VaildService</servlet-name>
+  	<url-pattern>/wx/vaild</url-pattern>
   </servlet-mapping>
 </web-app>
