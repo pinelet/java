@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.pinelet</groupId>
+	<artifactId>parent</artifactId>
+	<packaging>pom</packaging>
+	<version>1.0</version>
+	<name>mobile pay</name>
+
+	<modules>
+		<module>httpasync</module>
+		<module>weixinpay</module>
+	</modules>
+	<repositories>
+		<repository>
+			<id>releases</id>
+			<name>Releases</name>
+			<url>http://10.100.31.71:8080/nexus/content/groups/public</url>
+		</repository>
+		<repository>
+			<id>jboss-cache</id>
+			<name>jboss-cache</name>
+			<url>http://repository.jboss.org/maven2</url>
+		</repository>
+		<repository>
+			<id>mvnsearch</id>
+			<name>mvnsearch Maven Repository</name>
+			<url>http://www.mvnsearch.org/maven2</url>
+		</repository>
+		<repository>
+			<id>ibiblio</id>
+			<name>ibiblio Maven Repository</name>
+			<url>http://www.ibiblio.org/maven2</url>
+		</repository>
+		<repository>
+			<id>mirrors.ibiblio</id>
+			<name>mirrors.ibiblio Maven Repository</name>
+			<url>http://mirrors.ibiblio.org/pub/mirrors/maven2</url>
+		</repository>
+		<repository>
+			<id>repo.springsource.org</id>
+			<name>repo.springsource.org-releases</name>
+			<url>http://repo.springsource.org/libs-milestone-local</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<id>releases</id>
+			<name>Releases</name>
+			<url>http://10.100.31.71:8080/nexus/content/groups/public</url>
+		</pluginRepository>
+		<pluginRepository>
+			<id>jboss-cache</id>
+			<name>jboss-cache</name>
+			<url>http://repository.jboss.org/maven2</url>
+		</pluginRepository>
+		<pluginRepository>
+			<id>mvnsearch</id>
+			<name>mvnsearch Maven Repository</name>
+			<url>http://www.mvnsearch.org/maven2</url>
+		</pluginRepository>
+		<pluginRepository>
+			<id>ibiblio</id>
+			<name>ibiblio Maven Repository</name>
+			<url>http://www.ibiblio.org/maven2</url>
+		</pluginRepository>
+		<pluginRepository>
+			<id>mirrors.ibiblio</id>
+			<name>mirrors.ibiblio Maven Repository</name>
+			<url>http://mirrors.ibiblio.org/pub/mirrors/maven2</url>
+		</pluginRepository>
+		<pluginRepository>
+			<id>repo.springsource.org</id>
+			<name>repo.springsource.org-releases</name>
+			<url>http://repo.springsource.org/libs-milestone-local</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</pluginRepository>
+	</pluginRepositories>
+
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+					<encoding>UTF-8</encoding>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>
