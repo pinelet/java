@@ -1,35 +1,79 @@
 package com.pinelet.weixinpay.wxservice;
 
-import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import com.pinelet.common.httpasync.HttpAsyncClientFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.pinelet.common.httpasync.HttpClientCallback;
+import com.pinelet.common.httpasync.HttpClientCallbackResult;
 
 
 public class ReflushAccessTokenExcutor {
 	
 	private String accessToken = null;
-	private String atokenURL = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=APPID&secret=APPSECRET";
-
+	private long expires = 0L; 
+	ScheduledExecutorService executor = null;
+	private Logger loger = LoggerFactory.getLogger(this.getClass());
 	
 	public void buildAccessToken(final String appid, final String secret, int minute) {
-		ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
-		executor.schedule(new Callable<String>() {
+		
+		final String atokenURL = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" + appid + "&secret=" + secret;
+		executor = Executors.newSingleThreadScheduledExecutor();
+		executor.scheduleAtFixedRate(new TokenRunnable(atokenURL), 0, minute, TimeUnit.MINUTES);
+	}
+	
+	public void shutdown() {
+		executor.shutdownNow();
+	}
+	private class TokenRunnable implements Runnable {
+		private String tokenURL = null;
+		
+		public TokenRunnable(String url) {
+			this.tokenURL = url;
+		}
+		/**
+		 * 调用获取access_token接口
+		 */
+		@Override
+		public void run() {
+			loger.info("get access token from {}", tokenURL);
+			ApplicationContextManager.getInstance().getClient().doAsyncHttpGet(tokenURL, new HttpClientCallback() {
+
+				@Override
+				public void completed(HttpClientCallbackResult result) {
+					String tokenjson = result.getReplyDataAsString();
+					//{"access_token":"ACCESS_TOKEN","expires_in":7200}
+					 JSONObject tokenjo = JSON.parseObject(tokenjson);
+					 int error = tokenjo.getIntValue("errcode");
+					 if ( error > 0) {
+						 loger.error("get access token failed errorcode is {} and errmsg is {}", error, tokenjson);
+						 return;
+					 }
+					 expires = System.currentTimeMillis()/1000 + tokenjo.getLongValue("expires_in") - 300;
+					 accessToken = tokenjo.getString("access_token");
+					 loger.info("success get access token is [{}], expires {}", accessToken);
+				}
+
+				@Override
+				public void failed(HttpClientCallbackResult result) {
+					loger.error("get access token failed and returncode is {}, replay message [{}]", result.getRetCode(), result.getReplyDataAsString());
+					//try again by times
+					
+				}
+				
+			});
 			
-			/**
-			 * 调用获取access_token接口
-			 */
-			@Override
-			public String call() throws Exception {
-				HttpAsyncClientFactory.build(5, 100);
-				return null;
-			}
-			
-		}, minute, TimeUnit.MINUTES);
+		}
 	}
 	public String getAccessToken() {
+		if (System.currentTimeMillis()/1000 - expires > 0) {
+			//TODO try again
+		}
 		return accessToken;
 	}
 
