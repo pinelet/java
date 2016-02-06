@@ -11,7 +11,7 @@
 		<artifactId>parent</artifactId>
 		<version>1.0</version>
 	</parent>
-	
+
 	<dependencies>
 		<dependency>
 			<groupId>com.google.guava</groupId>
@@ -64,7 +64,7 @@
 				<artifactId>jetty-maven-plugin</artifactId>
 				<version>9.2.10.v20150310</version>
 				<configuration>
-					<scanIntervalSeconds>10</scanIntervalSeconds>
+					<scanIntervalSeconds>5</scanIntervalSeconds>
 					<webApp>
 						<contextPath>/pay</contextPath>
 					</webApp>

@@ -24,7 +24,7 @@ public class ReflushAccessTokenExcutor {
 		
 		final String atokenURL = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" + appid + "&secret=" + secret;
 		executor = Executors.newSingleThreadScheduledExecutor();
-		executor.scheduleAtFixedRate(new TokenRunnable(atokenURL), 0, minute, TimeUnit.MINUTES);
+		executor.scheduleWithFixedDelay(new TokenRunnable(atokenURL), 0, minute, TimeUnit.MINUTES);
 	}
 	
 	public void shutdown() {
@@ -41,7 +41,8 @@ public class ReflushAccessTokenExcutor {
 		 */
 		@Override
 		public void run() {
-			loger.info("get access token from {}", tokenURL);
+			if (loger.isDebugEnabled())
+				loger.debug("get access token from {}", tokenURL);
 			ApplicationContextManager.getInstance().getClient().doAsyncHttpGet(tokenURL, new HttpClientCallback() {
 
 				@Override
@@ -50,13 +51,14 @@ public class ReflushAccessTokenExcutor {
 					//{"access_token":"ACCESS_TOKEN","expires_in":7200}
 					 JSONObject tokenjo = JSON.parseObject(tokenjson);
 					 int error = tokenjo.getIntValue("errcode");
-					 if ( error > 0) {
+					 if ( error != 0) {
 						 loger.error("get access token failed errorcode is {} and errmsg is {}", error, tokenjson);
 						 return;
 					 }
-					 expires = System.currentTimeMillis()/1000 + tokenjo.getLongValue("expires_in") - 300;
+					 long exminute = tokenjo.getLongValue("expires_in") ;
+					 expires = System.currentTimeMillis()/1000 + exminute - 300;
 					 accessToken = tokenjo.getString("access_token");
-					 loger.info("success get access token is [{}], expires {}", accessToken);
+					 loger.info("success get access token is [{}], expires {}", accessToken, exminute);
 				}
 
 				@Override

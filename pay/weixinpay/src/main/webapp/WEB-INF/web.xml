@@ -6,11 +6,11 @@
 	<display-name>PENGDA weixin Pay Web Application</display-name>
 	<context-param>
 		<param-name>pay.wx.appid</param-name>
-		<param-value>wxaea199a4b0a6faf8</param-value>
+		<param-value>wxc8b83c4a74cbee09</param-value>
 	</context-param>
 	<context-param>
 		<param-name>pay.wx.appsecret</param-name>
-		<param-value></param-value>
+		<param-value>f3343c80a9a324b80976b4f0979b1f68</param-value>
 	</context-param>
 	<listener>
 		<listener-class>com.pinelet.weixinpay.servlet.PayContextListener</listener-class>
@@ -18,6 +18,7 @@
 	<servlet>
 		<servlet-name>MainService</servlet-name>
 		<servlet-class>com.pinelet.weixinpay.servlet.MainService</servlet-class>
+		<async-supported>true</async-supported>
 	</servlet>
 	<servlet>
 		<servlet-name>VaildService</servlet-name>

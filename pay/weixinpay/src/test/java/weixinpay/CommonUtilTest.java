@@ -39,6 +39,6 @@ public class CommonUtilTest {
 	
 	@Test
 	public void doTestSignatureVerify() {
-		//service.signatureVerify("sign", "2016-02-01 18:29", "nonce");
+		service.signatureVerify("sign", "2016-02-01 18:29", "nonce");
 	}
 }
