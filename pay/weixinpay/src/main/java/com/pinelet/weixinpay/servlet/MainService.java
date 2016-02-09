@@ -2,7 +2,6 @@ package com.pinelet.weixinpay.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Date;
 import java.util.concurrent.Executor;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -36,7 +35,7 @@ public class MainService extends HttpServlet {
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
 		
-		executor = new ThreadPoolExecutor(10, 50, 3L, TimeUnit.MINUTES, new LinkedBlockingQueue<Runnable>(100));
+		executor = new ThreadPoolExecutor(10, 50, 3L, TimeUnit.MINUTES, new LinkedBlockingQueue<Runnable>(300));
 	}
 
 	/**
@@ -57,6 +56,8 @@ public class MainService extends HttpServlet {
 			 keepsilence(response);
 			 return;
 		 }
+		 //loger.info("request message -[{}]",request.getReader().readLine());
+		 
 		//解析推送的xml数据
 		 Document doc = XMLDocumentService.getInstance().parse(request.getInputStream());
 		//判断是推动、还是请求消息(MsgType)
@@ -66,7 +67,7 @@ public class MainService extends HttpServlet {
 		}
 		//调用对应的process
 		executor.execute(ProcessorMsgProvider.get(request.startAsync(), doc));
-		response.getWriter().append("success").append(new Date() + "at main").flush(); 
+		
 	}
 	
 	private void keepsilence(HttpServletResponse response) throws IOException {

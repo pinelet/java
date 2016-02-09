@@ -1,9 +1,5 @@
 package com.pinelet.weixinpay.msg;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.Date;
-
 import javax.servlet.AsyncContext;
 
 import org.slf4j.Logger;
@@ -20,13 +16,20 @@ public class PushSubscribeMsgImpl extends AbsProcessMessage {
 
 	@Override
 	public void run() {
-		try {
-			PrintWriter print = ctx.getResponse().getWriter();
-			print.println("pushSubMsg said : " + new Date());
-			print.flush();
-		} catch (IOException e) {
-			loger.error("", e);
+		String EventKey = getValue("EventKey");
+		//如果eventkey为空，说明只是关注
+		if (EventKey == null) {
+			return;
 		}
+		//get 二维码参数
+		String machineID = null;
+		String ticket = null;
+		if (EventKey.startsWith("qrscene_")) {
+			//此参数可能为设备关联号
+			machineID = EventKey.substring(8);
+			ticket = getValue("Ticket");
+		}
+		ctx.dispatch("/order.html?" + machineID);
 	}
 
 }

@@ -1,5 +1,7 @@
 package com.pinelet.weixinpay.wxservice;
 
+import java.io.IOException;
+
 import javax.servlet.AsyncContext;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
@@ -32,6 +34,12 @@ public class ProcessorMsgProvider {
 			type = ((Node)xpath.evaluate("/xml/MsgType", doc, XPathConstants.NODE)).getTextContent();
 		} catch (DOMException | XPathExpressionException e) {
 			loger.error("get message node /xml/MsgType failed..", e);
+		}
+		if (type == null) {
+			try {
+				context.getResponse().getWriter().append("").flush();
+			} catch (IOException e) {}
+			context.complete();
 		}
 		switch (type) {
 		case EVENT :

@@ -83,8 +83,9 @@ public class EventMsgTest {
 		
 		loger.info("返回：" + con.getResponseMessage());
 		BufferedReader reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
-		while(reader.ready()) {
-			loger.info("明细 :" + reader.readLine());
+		String res = null;
+		while((res = reader.readLine()) != null) {
+			loger.info("明细 :" + res);
 		}
 		con.disconnect();
 	}
