@@ -2,6 +2,7 @@ package com.pinelet.weixinpay.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -39,30 +40,40 @@ public class MainService extends HttpServlet {
 	}
 
 	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 * 支付页面入口跳转
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		response.getWriter().append("Served at: ").append(request.getContextPath());
+		Map<String, String[]> info = request.getParameterMap();
+		//判断用户的微信版本 from user agent
+		String agent = request.getHeader("user-agent");
+		if (agent != null && agent.contains("MicroMessenger/")) {
+			int index = agent.indexOf("MicroMessenger/");
+			int version = Integer.valueOf(agent.substring(index + 15, index + 16).trim());
+			if (version >= 5) 
+				executor.execute(ProcessorMsgProvider.get(request.startAsync(request, response), info));
+			else keepsilence(response, "<p>此微信不支持微信支付，请升级后再进行支付。</p>");
+		}
+		else keepsilence(response, "<p>请使用微信进行支付。</p>");
 	}
 
 	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 * 处理消息推送、请求信息
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		 //请求过长(>10K),可能是非法消息，暂不处理
 		 if (request.getContentLength() > MAXREQ) {
 			 loger.warn("request is too big, must be little than {}, now is {}", MAXREQ, request.getContentLength());
-			 keepsilence(response);
+			 keepsilence(response, null);
 			 return;
 		 }
-		 //loger.info("request message -[{}]",request.getReader().readLine());
 		 
 		//解析推送的xml数据
 		 Document doc = XMLDocumentService.getInstance().parse(request.getInputStream());
-		//判断是推动、还是请求消息(MsgType)
+		//判断是推送、还是请求消息跳转(MsgType)  
+		 //如果
 		if (doc == null) {
-			keepsilence(response);
+			keepsilence(response, null);
 			return;
 		}
 		//调用对应的process
@@ -70,9 +81,9 @@ public class MainService extends HttpServlet {
 		
 	}
 	
-	private void keepsilence(HttpServletResponse response) throws IOException {
+	private void keepsilence(HttpServletResponse response, String message) throws IOException {
 		 PrintWriter print = response.getWriter();
-		 print.println("");
+		 print.println(message == null? "" : message);
 		 print.flush();
 		 return;
 	}

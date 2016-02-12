@@ -56,7 +56,7 @@ public class QRCodeServlet extends HttpServlet {
         hints.put(EncodeHintType.ERROR_CORRECTION, level);  //L 7%/M 15%/Q 25%/H 30%
         BitMatrix bitMatrix = null;
 		try {
-			bitMatrix = new MultiFormatWriter().encode(urlprefix + machineID, BarcodeFormat.QR_CODE, width, height, hints);
+			bitMatrix = new MultiFormatWriter().encode(urlprefix + "&m=" + machineID, BarcodeFormat.QR_CODE, width, height, hints);
 		} catch (WriterException e) {
 			loger.error("", e);
 		}  

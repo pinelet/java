@@ -1,5 +1,39 @@
 <html>
-<body>
-<h2>Hello World!</h2>
+	<head>
+	    <meta charset="utf-8">
+	    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+	    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	    <title>订单</title>
+	    <link rel="stylesheet" href="css/weui.css">
+	    <link rel="stylesheet" href="css/pay.css">
+  	</head>
+<body ontouchstart>
+<div class="page">
+	<div class="page_title">买水支付</div>
+	<div class="weui_cell">
+	    <div class="weui_cell_hd"><p>设备编号:</p></div>
+	    <div class="weui_cell_bd weui_cell_primary">12334568</div>
+  	</div>
+  	<div class="weui_cell">
+        <div class="weui_cell_hd"><label class="weui_label">金额</label></div>
+        <div class="weui_cell_bd weui_cell_primary">
+            <input class="weui_input" type="number" pattern="[0-9][.]*" placeholder="请输入金额(元)"/>
+        </div>
+    </div>
+
+   	<div class="weui_btn_area">
+        <a class="weui_btn weui_btn_primary" href="javascript:" id="pay">支付</a>
+    </div>
+    <div class="weui_cells_tips">*测试用</div>
+</div>
+
+<script src="js/jquery-2.1.4.js"></script>
+<script type="js/jquery-weui.js"></script>
+<script type="text/javascript">
+	//显示一个对话框
+$("#pay").click($.alert("我是一个对话框"));
+	//增加取得设备号显示
+</script>
 </body>
 </html>

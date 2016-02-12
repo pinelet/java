@@ -2,6 +2,7 @@ package com.pinelet.weixinpay.msg;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.servlet.AsyncContext;
 
@@ -27,6 +28,12 @@ public abstract class AbsProcessMessage implements Runnable {
 			node = nodes.item(i);
 			request.put(node.getNodeName(), node.getNodeValue());
 		}
+	}
+	
+	public AbsProcessMessage(AsyncContext ctx, Map<String, String[]> infos) {
+		this.ctx = ctx;
+		for (Entry<String, String[]> info : infos.entrySet())
+		request.put(info.getKey(), info.getValue()[0]);
 	}
 	
 	public void returnEventSuccess() {
