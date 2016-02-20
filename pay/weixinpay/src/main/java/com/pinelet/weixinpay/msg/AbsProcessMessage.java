@@ -7,6 +7,7 @@ import java.util.Map.Entry;
 
 import javax.servlet.AsyncContext;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -14,6 +15,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import com.google.common.collect.Maps;
+import com.pinelet.weixinpay.wxservice.ApplicationContextManager;
 
 public abstract class AbsProcessMessage implements Runnable {
 
@@ -68,6 +70,20 @@ public abstract class AbsProcessMessage implements Runnable {
 	        buf.append(randomstr.charAt(num));  
 	    }  
 	    return buf.toString(); 
+	}
+	
+	/**
+	 * 根据微信签名算法要求生成签名值
+	 * @param params
+	 * @return
+	 */
+	public String createSignature(Map<String, String> pairs) {
+		//对参数按照key=value的格式，并按照参数名ASCII字典序排序
+		String ruleNkey = ApplicationContextManager.map2String(pairs, true);
+		//拼接API密钥
+		String signature = DigestUtils.md5Hex(ruleNkey + "&key=" + ApplicationContextManager.getInstance().get(ApplicationContextManager.SPIKEY));
+		//MD5(stringSignTemp).toUpperCase()
+		return signature.toUpperCase();
 	}
 
 }

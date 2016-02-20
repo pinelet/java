@@ -1,8 +1,11 @@
 package com.pinelet.weixinpay.wxservice;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.beust.jcommander.internal.Lists;
 import com.google.common.base.Optional;
 import com.google.common.collect.Maps;
 import com.pinelet.common.httpasync.HttpAsyncClient;
@@ -27,7 +30,7 @@ public class ApplicationContextManager {
 	private static ApplicationContextManager context = new ApplicationContextManager(); 
 	
 	private ApplicationContextManager() {
-		client = HttpAsyncClientFactory.build(5, 100);
+		client = HttpAsyncClientFactory.build(5, 20);
 	}
 	public static ApplicationContextManager getInstance() {
 		return context;
@@ -38,12 +41,23 @@ public class ApplicationContextManager {
 		return this;
 	}
 	
-	public static String map2String (Map<String, String> pairs) {
-		StringBuffer urlsuffix = new StringBuffer();
-		for (Entry<String, String> entry : pairs.entrySet()) {
-			urlsuffix.append(entry.getKey()).append("=").append(entry.getValue());
+	public static String map2String(Map<String, String> pairs, boolean isSort) {
+		List<String> plist = Lists.newArrayList();
+		for (Entry<String, String> param : pairs.entrySet()) {
+			plist.add(param.getKey() + "=" + param.getValue());
 		}
-		return urlsuffix.toString();
+		if (isSort) {
+			Collections.sort(plist);
+		}
+		StringBuffer ruleStr = new StringBuffer();
+		for (String param : plist) {
+			ruleStr.append(param).append("&");
+		}
+		return ruleStr.deleteCharAt(ruleStr.length()).toString();
+	}
+	
+	public static String map2String (Map<String, String> pairs) {
+		return map2String(pairs, false);
 	}
 	
 	public HttpAsyncClient getClient() {
