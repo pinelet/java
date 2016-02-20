@@ -5,12 +5,17 @@
 	version="3.0">
 	<display-name>PENGDA weixin Pay Web Application</display-name>
 	<context-param>
+		<description>公众号ID</description>
 		<param-name>pay.wx.appid</param-name>
 		<param-value>wxc8b83c4a74cbee09</param-value>
 	</context-param>
 	<context-param>
 		<param-name>pay.wx.appsecret</param-name>
 		<param-value>f3343c80a9a324b80976b4f0979b1f68</param-value>
+	</context-param>
+	<context-param>
+		<param-name>pay.wx.spikey</param-name>
+		<param-value>q1ChOpOYyJYcbpE2X10LFF19dlt8V75c</param-value>
 	</context-param>
 	<listener>
 		<listener-class>com.pinelet.weixinpay.servlet.PayContextListener</listener-class>
@@ -33,7 +38,8 @@
 		</init-param>
 		<init-param>
 			<param-name>urlprefix</param-name>
-			<param-value>http://192.168.0.107:9090/pay/main?t=g</param-value>
+			<!--param-value>http://192.168.0.107:9090/pay/main?t=g</param-value-->
+			<param-value>http://www.ssjcx.com/pay/main?t=g</param-value>
 		</init-param>
 	</servlet>
 	<servlet>
@@ -51,6 +57,10 @@
 		<init-param>
 			<param-name>token</param-name>
 			<param-value>7OEsWTwEY6aIJS3A7gcsqMyuY2myL1Mk</param-value>
+		</init-param>
+		<init-param>
+		<param-name>aeskey</param-name>
+		<param-value>a6NceNPlRt7dd8Gn0322TEvtn2wKUCBeN8bWPnV5bOE</param-value>
 		</init-param>
 	</servlet>
 	

@@ -1,4 +1,4 @@
-package com.pinelet.weixinpay.wxservice;
+package com.pinelet.weixinpay.util;
 
 import java.io.IOException;
 import java.io.InputStream;

@@ -1,8 +1,6 @@
 package com.pinelet.weixinpay.servlet;
 
 import java.io.IOException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
 import java.util.List;
 
@@ -12,9 +10,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 
 /**
@@ -31,18 +31,12 @@ public class VaildService extends HttpServlet {
 	private static final String paramname_nonce = "nonce";
 	private static final String paramname_echostr = "echostr";
 	private static final String paramname_signature = "signature";
-	private MessageDigest digest = null;
 	private Logger loger = LoggerFactory.getLogger(this.getClass());
        
 	@Override
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
-		token = config.getInitParameter(initparam_token);
-        try {
-			digest = MessageDigest.getInstance("SHA-1");
-		} catch (NoSuchAlgorithmException e) {
-			loger.error("It's impossible ", e);
-		}
+		token = Optional.fromNullable(config.getInitParameter(initparam_token)).or(initparam_token);
 	}	
 
 	/**
@@ -58,7 +52,7 @@ public class VaildService extends HttpServlet {
 		String signature = request.getParameter(paramname_signature);
 		String nonce = request.getParameter(paramname_nonce);
 		String timestamp = request.getParameter(paramname_timestamp);
-		if (signatureVerify(signature, timestamp, nonce)) {
+		if (signatureVerify(signature, timestamp, nonce, token)) {
 			response.getWriter().append(echostr).flush();
 			loger.info("vaild pass...");
 		}
@@ -79,21 +73,21 @@ public class VaildService extends HttpServlet {
 	 * @param noce
 	 * @return
 	 */
-	public boolean signatureVerify(String signature, String timestamp, String nonce) {
+	public boolean signatureVerify(String signature, String timestamp, String nonce, String token) {
 		boolean vaild = false;
 		if (signature == null || timestamp == null || nonce == null) {
 			return vaild;
 		}
+		if (loger.isDebugEnabled())
+			loger.debug("sign[{}],timestamp[{}],nonce[{}],token[{}]", signature, timestamp, nonce, token);
 		List<String> signlist = Lists.newArrayList(token, timestamp, nonce);
 		Collections.sort(signlist);
 		String sign = "";
 		for (String value : signlist) {
 			sign += value;
 		}
-		digest.update(sign.getBytes());
 		if (signature != null) {
-			vaild = signature.equals(new String(digest.digest()));
-			digest.reset();
+			vaild = signature.equals(DigestUtils.sha1Hex(sign));
 		}
 		return vaild;
 	}

@@ -9,14 +9,16 @@ import com.pinelet.common.httpasync.HttpAsyncClient;
 import com.pinelet.common.httpasync.HttpAsyncClientFactory;
 
 public class ApplicationContextManager {
-	
+	//公众号ID
 	public static final String APPID = "pay.wx.appid";
-	
+	//目前用于报文验证接口时的token
 	public static final String TOKEN = "pay.wx.token";
-	
+	//公众号密码
 	public static final String APPSECRET = "pay.wx.appsecret";
 	
 	public static final String HTTPCLIENT = "pay.wx.httpclient";
+	//在发送支付请求报文中的API密钥
+	public static final String SPIKEY = "pay.wx.spikey";
 	
 	Map<String, String> property = Maps.newConcurrentMap();
 	

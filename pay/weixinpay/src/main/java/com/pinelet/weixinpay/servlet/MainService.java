@@ -1,7 +1,12 @@
 package com.pinelet.weixinpay.servlet;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.io.Reader;
+import java.io.StringBufferInputStream;
 import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -18,8 +23,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 
+import com.pinelet.weixinpay.util.XMLDocumentService;
 import com.pinelet.weixinpay.wxservice.ProcessorMsgProvider;
-import com.pinelet.weixinpay.wxservice.XMLDocumentService;
 
 /**
  * 接收消息推送主服务,默认定义为async处理servlet
@@ -51,7 +56,7 @@ public class MainService extends HttpServlet {
 			int version = Integer.valueOf(agent.substring(index + 15, index + 16).trim());
 			if (version >= 5) 
 				executor.execute(ProcessorMsgProvider.get(request.startAsync(request, response), info));
-			else keepsilence(response, "<p>此微信不支持微信支付，请升级后再进行支付。</p>");
+			else keepsilence(response, "<p>此微信版本不支持微信支付，请升级后再进行支付。</p>");
 		}
 		else keepsilence(response, "<p>请使用微信进行支付。</p>");
 	}
@@ -67,7 +72,9 @@ public class MainService extends HttpServlet {
 			 keepsilence(response, null);
 			 return;
 		 }
-		 
+//		 BufferedReader in = new BufferedReader(new InputStreamReader(request.getInputStream()));
+//		 String line = in.readLine();
+//			 loger.info("get reqline [{}] ", line);
 		//解析推送的xml数据
 		 Document doc = XMLDocumentService.getInstance().parse(request.getInputStream());
 		//判断是推送、还是请求消息跳转(MsgType)  

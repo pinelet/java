@@ -2,6 +2,7 @@ package com.pinelet.weixinpay.msg;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.Random;
 import java.util.Map.Entry;
 
 import javax.servlet.AsyncContext;
@@ -16,6 +17,9 @@ import com.google.common.collect.Maps;
 
 public abstract class AbsProcessMessage implements Runnable {
 
+	private static String randomstr = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";  
+    private static Random random = new Random();  
+    
 	protected AsyncContext ctx = null;
 	private Map<String, String> request = Maps.newHashMap();
 	private Logger loger = LoggerFactory.getLogger(AbsProcessMessage.class);
@@ -36,6 +40,9 @@ public abstract class AbsProcessMessage implements Runnable {
 		request.put(info.getKey(), info.getValue()[0]);
 	}
 	
+	/**
+	 * 在正常处理通知信息后，默认回应成功结果并完成异步调用
+	 */
 	public void returnEventSuccess() {
 		try {
 			ctx.getResponse().getWriter().append("success").flush();
@@ -46,6 +53,21 @@ public abstract class AbsProcessMessage implements Runnable {
 	}
 	public String getValue(String key) {
 		return request.get(key);
+	}
+	
+	/**
+	 * 生成指定长度的随机字符串
+	 * @param length
+	 * @return
+	 */
+	public static String getRandomString(int length) {
+		
+	    StringBuffer buf = new StringBuffer();  
+	    for (int i = 0; i < length; i++) {  
+	        int num = random.nextInt(62);  
+	        buf.append(randomstr.charAt(num));  
+	    }  
+	    return buf.toString(); 
 	}
 
 }

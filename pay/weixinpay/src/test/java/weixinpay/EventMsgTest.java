@@ -1,17 +1,12 @@
 package weixinpay;
 
-import static org.junit.Assert.*;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -72,7 +67,7 @@ public class EventMsgTest {
 		map.put("Event","subscribe");
 		map.put("EventKey","qrscene_123123");
 		map.put("Ticket","t");
-		HttpURLConnection con = (HttpURLConnection)new URL("http://localhost:9090/pay/wx/main").openConnection();
+		HttpURLConnection con = (HttpURLConnection)new URL("http://localhost:9090/pay/main").openConnection();
 		con.setRequestMethod("POST");
 		con.setDoOutput(true);
 		con.connect();

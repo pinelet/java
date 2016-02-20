@@ -19,6 +19,7 @@ public class PushSubscribeMsgImpl extends AbsProcessMessage {
 		String EventKey = getValue("EventKey");
 		//如果eventkey为空，说明只是关注
 		if (EventKey == null) {
+			ctx.complete();
 			return;
 		}
 		//get 二维码参数
