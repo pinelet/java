@@ -53,7 +53,7 @@ public class ApplicationContextManager {
 		for (String param : plist) {
 			ruleStr.append(param).append("&");
 		}
-		return ruleStr.deleteCharAt(ruleStr.length()).toString();
+		return ruleStr.deleteCharAt(ruleStr.length()-1).toString();
 	}
 	
 	public static String map2String (Map<String, String> pairs) {

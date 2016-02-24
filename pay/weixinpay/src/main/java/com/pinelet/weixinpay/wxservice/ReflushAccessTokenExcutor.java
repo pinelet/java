@@ -15,8 +15,8 @@ import com.pinelet.common.httpasync.HttpClientCallbackResult;
 
 public class ReflushAccessTokenExcutor {
 	
-	private String accessToken = null;
-	private long expires = 0L; 
+	private static String accessToken = null;
+	private static long expires = 0L; 
 	ScheduledExecutorService executor = null;
 	private Logger loger = LoggerFactory.getLogger(this.getClass());
 	
@@ -72,7 +72,7 @@ public class ReflushAccessTokenExcutor {
 			
 		}
 	}
-	public String getAccessToken() {
+	public static String getAccessToken() {
 		if (System.currentTimeMillis()/1000 - expires > 0) {
 			//TODO try again
 		}

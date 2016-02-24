@@ -17,6 +17,7 @@ import org.w3c.dom.Node;
 
 import com.pinelet.weixinpay.msg.AbsProcessMessage;
 import com.pinelet.weixinpay.msg.PushSubscribeMsgImpl;
+import com.pinelet.weixinpay.msg.WXPayService;
 
 public class ProcessorMsgProvider {
 	

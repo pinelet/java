@@ -18,7 +18,7 @@
 			<div class="weui_cell_hd">
 				<p>设备编号:</p>
 			</div>
-			<div class="weui_cell_bd weui_cell_primary"><%=request.getAttribute("mid") %></div>
+			<div class="weui_cell_bd weui_cell_primary"><%=request.getParameter("state") %></div>
 		</div>
 		<div class="weui_cell">
 			<div class="weui_cell_hd">

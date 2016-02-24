@@ -1,12 +1,12 @@
-package com.pinelet.weixinpay.wxservice;
+package com.pinelet.weixinpay.msg;
 
 import java.util.Map;
 
 import javax.servlet.AsyncContext;
 
-import com.pinelet.weixinpay.msg.AbsProcessMessage;
+import com.pinelet.weixinpay.wxservice.ApplicationContextManager;
 
-public class PublicSPIService extends AbsProcessMessage {
+public class PublicSPIService extends AbsProcessMessage implements Runnable{
 
 	private static String prePayURL = "https://api.mch.weixin.qq.com/pay/unifiedorder";
 
@@ -21,10 +21,10 @@ public class PublicSPIService extends AbsProcessMessage {
 		String prepay_id = null;
 		ctx.getRequest().setAttribute("prepay_id", prepay_id);
 		//组织返回客户支付页面的报文JSON appid/timeStamp/nonceStr/package(prepay_id)/signType/paySign
-		String iSpikey = app.get(ApplicationContextManager.SPIKEY);
+		String iSpikey = ApplicationContextManager.getInstance().get(ApplicationContextManager.SPIKEY);
 		long iTimeStamp = System.currentTimeMillis()/1000;	//10
 		String iNonceStr = getRandomString(32);	//32
-		String iPackage = //统一下单后生成的
+		String iPackage = null;//统一下单后生成的
 	}
 
 	/**
@@ -45,5 +45,6 @@ public class PublicSPIService extends AbsProcessMessage {
 	 */
 	private String createPrePayRequest() {
 		//TODO 需要取得当前客户的ID
+		return null;
 	}
 }

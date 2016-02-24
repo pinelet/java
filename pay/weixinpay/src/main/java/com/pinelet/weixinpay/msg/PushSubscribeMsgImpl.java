@@ -6,7 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 
-public class PushSubscribeMsgImpl extends AbsProcessMessage {
+public class PushSubscribeMsgImpl extends AbsProcessMessage implements Runnable{
 	
 	Logger loger = LoggerFactory.getLogger(getClass());
 
@@ -14,6 +14,9 @@ public class PushSubscribeMsgImpl extends AbsProcessMessage {
 		super(ctx, doc);
 	}
 
+	/**
+	 * 
+	 */
 	@Override
 	public void run() {
 		String EventKey = getValue("EventKey");

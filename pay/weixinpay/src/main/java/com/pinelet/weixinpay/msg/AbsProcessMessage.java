@@ -1,6 +1,7 @@
 package com.pinelet.weixinpay.msg;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.Map.Entry;
@@ -17,7 +18,7 @@ import org.w3c.dom.NodeList;
 import com.google.common.collect.Maps;
 import com.pinelet.weixinpay.wxservice.ApplicationContextManager;
 
-public abstract class AbsProcessMessage implements Runnable {
+public abstract class AbsProcessMessage {
 
 	private static String randomstr = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";  
     private static Random random = new Random();  
@@ -35,7 +36,10 @@ public abstract class AbsProcessMessage implements Runnable {
 			request.put(node.getNodeName(), node.getNodeValue());
 		}
 	}
-	
+	public AbsProcessMessage(AsyncContext ctx) {
+		this(ctx, Maps.<String, String[]>newHashMap());
+	}
+
 	public AbsProcessMessage(AsyncContext ctx, Map<String, String[]> infos) {
 		this.ctx = ctx;
 		for (Entry<String, String[]> info : infos.entrySet())

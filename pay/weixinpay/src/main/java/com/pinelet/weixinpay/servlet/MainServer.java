@@ -1,13 +1,7 @@
 package com.pinelet.weixinpay.servlet;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.io.Reader;
-import java.io.StringBufferInputStream;
-import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -24,16 +18,15 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 
 import com.pinelet.weixinpay.util.XMLDocumentService;
-import com.pinelet.weixinpay.wxservice.ProcessorMsgProvider;
 
 /**
  * 接收消息推送主服务,默认定义为async处理servlet
  */
-public class MainService extends HttpServlet {
+public class MainServer extends HttpServlet {
 	
 	private static final long serialVersionUID = -5257873814413697109L;
 	private Executor executor = null;
-	private static final int MAXREQ = 10240;
+	private static final int MAXREQ = 2048;
 	private Logger loger = LoggerFactory.getLogger(getClass());
 	/**
 	 * @see Servlet#init(ServletConfig)
@@ -42,23 +35,6 @@ public class MainService extends HttpServlet {
 		super.init(config);
 		
 		executor = new ThreadPoolExecutor(10, 50, 3L, TimeUnit.MINUTES, new LinkedBlockingQueue<Runnable>(300));
-	}
-
-	/**
-	 * 支付页面入口跳转
-	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		Map<String, String[]> info = request.getParameterMap();
-		//判断用户的微信版本 from user agent
-		String agent = request.getHeader("user-agent");
-		if (agent != null && agent.contains("MicroMessenger/")) {
-			int index = agent.indexOf("MicroMessenger/");
-			int version = Integer.valueOf(agent.substring(index + 15, index + 16).trim());
-			if (version >= 5) 
-				executor.execute(ProcessorMsgProvider.get(request.startAsync(request, response), info));
-			else keepsilence(response, "<p>此微信版本不支持微信支付，请升级后再进行支付。</p>");
-		}
-		else keepsilence(response, "<p>请使用微信进行支付。</p>");
 	}
 
 	/**
@@ -84,7 +60,7 @@ public class MainService extends HttpServlet {
 			return;
 		}
 		//调用对应的process
-		executor.execute(ProcessorMsgProvider.get(request.startAsync(), doc));
+		//executor.execute(ProcessorMsgProvider.get(request.startAsync(), doc));
 		
 	}
 	

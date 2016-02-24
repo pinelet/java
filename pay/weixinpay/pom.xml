@@ -26,7 +26,7 @@
 
 		<dependency>
 			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-jcl</artifactId>
+			<artifactId>slf4j-log4j12</artifactId>
 			<version>1.7.14</version>
 		</dependency>
 		<dependency>
@@ -51,11 +51,11 @@
 			<artifactId>fastjson</artifactId>
 			<version>1.2.7</version>
 		</dependency>
-		<dependency>
+		<!-- dependency>
 			<groupId>org.glassfish.jersey.containers</groupId>
 			<artifactId>jersey-container-servlet</artifactId>
 			<version>2.22.1</version>
-		</dependency>
+		</dependency-->
 	</dependencies>
 	<build>
 		<finalName>pay</finalName>
