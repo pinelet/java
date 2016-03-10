@@ -41,8 +41,8 @@ public class ProcessorMsgProvider {
 		return get(type, context, doc);
 	}
 	
-	public static AbsProcessMessage get(AsyncContext context, Map<String, String[]> infos) {
-		return get(infos.get("t")[0], context, infos);
+	public static AbsProcessMessage get(AsyncContext context, Map<String, String> infos) {
+		return get(infos.get("t"), context, infos);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -71,7 +71,7 @@ public class ProcessorMsgProvider {
 				return new PushSubscribeMsgImpl(context, (Document)doc);
 			}
 		case MT_C_GATE :
-			return new WXPayService(context, (Map<String, String[]>)doc);
+			return new WXPayService(context);
 		}
 		return null;
 	}

@@ -22,6 +22,8 @@ public class ApplicationContextManager {
 	public static final String HTTPCLIENT = "pay.wx.httpclient";
 	//在发送支付请求报文中的API密钥
 	public static final String SPIKEY = "pay.wx.spikey";
+	//微信商户号
+	public static final String SHOPID = "pay.wx.shopid";
 	
 	Map<String, String> property = Maps.newConcurrentMap();
 	

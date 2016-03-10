@@ -1,11 +1,8 @@
 package com.pinelet.weixinpay.msg;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
-import java.util.Map.Entry;
-
 import javax.servlet.AsyncContext;
 
 import org.apache.commons.codec.digest.DigestUtils;
@@ -37,13 +34,11 @@ public abstract class AbsProcessMessage {
 		}
 	}
 	public AbsProcessMessage(AsyncContext ctx) {
-		this(ctx, Maps.<String, String[]>newHashMap());
+		this(ctx, Maps.<String, String>newHashMap());
 	}
-
-	public AbsProcessMessage(AsyncContext ctx, Map<String, String[]> infos) {
-		this.ctx = ctx;
-		for (Entry<String, String[]> info : infos.entrySet())
-		request.put(info.getKey(), info.getValue()[0]);
+	
+	public AbsProcessMessage(AsyncContext ctx, Map<String, String> infos) {
+		request = infos;
 	}
 	
 	/**
@@ -81,7 +76,7 @@ public abstract class AbsProcessMessage {
 	 * @param params
 	 * @return
 	 */
-	public String createSignature(Map<String, String> pairs) {
+	public static String createSignature(Map<String, String> pairs) {
 		//对参数按照key=value的格式，并按照参数名ASCII字典序排序
 		String ruleNkey = ApplicationContextManager.map2String(pairs, true);
 		//拼接API密钥

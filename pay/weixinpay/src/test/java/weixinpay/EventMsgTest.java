@@ -17,6 +17,9 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 
 import org.junit.After;
 import org.junit.Before;
@@ -33,10 +36,13 @@ public class EventMsgTest {
 	DocumentBuilder dp = null;
 	Transformer transfer = null;
 	Logger loger = LoggerFactory.getLogger(getClass());
+	XPath xpath = null;
+	
 	@Before
 	public void setUp() throws Exception {
 		dp = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 		transfer = TransformerFactory.newInstance().newTransformer();
+		xpath = XPathFactory.newInstance().newXPath();
 	}
 
 	@After
@@ -98,8 +104,12 @@ public class EventMsgTest {
 		return doc;
 	}
 	
-	public void msgEventSubTest() {
-		
+	@Test
+	public void msgEventSub() throws XPathExpressionException {
+		Map<String, String> info = Maps.newHashMap();
+		info.put("return_code", "success");
+		info.put("return_msg", "message" + System.currentTimeMillis()/1000);
+		System.out.print(xpath.evaluate("/xml/return_code", map2xml(info)));
 	}
 
 }

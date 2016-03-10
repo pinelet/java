@@ -6,7 +6,6 @@ import java.util.Map;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -17,7 +16,6 @@ import org.slf4j.LoggerFactory;
 import com.beust.jcommander.internal.Maps;
 import com.pinelet.weixinpay.msg.WXPayService;
 import com.pinelet.weixinpay.wxservice.ApplicationContextManager;
-import com.pinelet.weixinpay.wxservice.ProcessorMsgProvider;
 
 /**
  * 预支付
@@ -40,7 +38,7 @@ public class PrePayServer extends HttpServlet {
 	 * 支付页面入口跳转
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		Map<String, String[]> info = request.getParameterMap();
+		//Map<String, String> info = request.getParameterMap();
 		//判断用户的微信版本 from user agent
 		String agent = request.getHeader("user-agent");
 		if (agent != null && agent.contains("MicroMessenger/")) {
@@ -49,6 +47,7 @@ public class PrePayServer extends HttpServlet {
 			if (version >= 5) {
 				//取得machineID
 				String mid = request.getParameter("state");
+				request.getSession().setAttribute("mid", mid);
 				String code = request.getParameter("code");
 				if (loger.isDebugEnabled())
 					loger.debug("get machine ID - [{}]", mid);
@@ -59,7 +58,7 @@ public class PrePayServer extends HttpServlet {
 																	 "secret", app.get(ApplicationContextManager.APPSECRET),
 																	 "code", code,
 																	 "grant_type","authorization_code"));
-				app.getClient().doAsyncHttpGet(accessOpenidUrl + suffix, new WXPayService(request.startAsync(request, response), info));
+				app.getClient().doAsyncHttpGet(accessOpenidUrl + suffix, new WXPayService(request.startAsync(request, response)));
 			}
 			else keepsilence(response, "<p>此微信版本不支持微信支付，请升级后再进行支付。</p>");
 		}
