@@ -14,6 +14,10 @@
     <param-name>pay.wx.spikey</param-name>
     <param-value>q1ChOpOYyJYcbpE2X10LFF19dlt8V75c</param-value>
   </context-param>
+  <context-param>
+    <param-name>pay.wx.shopid</param-name>
+    <param-value>1283996101</param-value>
+  </context-param>
   <listener>
     <listener-class>com.pinelet.weixinpay.servlet.PayContextListener</listener-class>
   </listener>
@@ -53,9 +57,17 @@
     <async-supported>true</async-supported>
   </servlet>
   <servlet>
-  	<servlet-name>PrePayServer</servlet-name>
-  	<servlet-class>com.pinelet.weixinpay.servlet.PrePayServer</servlet-class>
-  	<async-supported>true</async-supported>
+    <servlet-name>PrePayServer</servlet-name>
+    <servlet-class>com.pinelet.weixinpay.servlet.PrePayServer</servlet-class>
+    <async-supported>true</async-supported>
+  </servlet>
+  <servlet>
+    <servlet-name>SubmitOrderServer</servlet-name>
+    <servlet-class>com.pinelet.weixinpay.servlet.SubmitOrderServer</servlet-class>
+    <init-param>
+      <param-name>pay.notifyURL</param-name>
+      <param-value>http://www.ssjcx.com/pay/wx/recresult</param-value>
+    </init-param>
   </servlet>
   <servlet>
     <servlet-name>VaildService</servlet-name>
@@ -70,13 +82,17 @@
       <param-value>a6NceNPlRt7dd8Gn0322TEvtn2wKUCBeN8bWPnV5bOE</param-value>
     </init-param>
   </servlet>
+  <servlet>
+  	<servlet-name>ReceicePayResult</servlet-name>
+  	<servlet-class>com.pinelet.weixinpay.servlet.ReceicePayResult</servlet-class>
+  </servlet>
   <servlet-mapping>
     <servlet-name>MainService</servlet-name>
     <url-pattern>/main</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
-  	<servlet-name>PrePayServer</servlet-name>
-  	<url-pattern>/prepay</url-pattern>
+    <servlet-name>PrePayServer</servlet-name>
+    <url-pattern>/prepay</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>VaildService</servlet-name>
@@ -85,5 +101,13 @@
   <servlet-mapping>
     <servlet-name>QRCodeService</servlet-name>
     <url-pattern>/wx/qrcode</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>SubmitOrderServer</servlet-name>
+    <url-pattern>/wx/suborder</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+  	<servlet-name>ReceicePayResult</servlet-name>
+  	<url-pattern>/wx/recresult</url-pattern>
   </servlet-mapping>
 </web-app>

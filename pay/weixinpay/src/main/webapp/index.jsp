@@ -40,7 +40,7 @@
 	<script type="js/jquery-weui.js"></script>
 	<script type="text/javascript">
 	$.ajaxSetup({cache:false});
-	//支付
+	//支付初始化
 	$(document).ready(function(){
 		if (typeof WeixinJSBridge == "undefined"){
 		   if( document.addEventListener ){
@@ -51,28 +51,29 @@
 		   }
 		}
 	});
+	// 页面下单成功后的回调
+	var subordersuccess = function(result) {
+		//根据返回值跳出确认域对话框
+		$.confirm(
+			'<br>商户名：水魔力<br>支付金额：' + result.amount + '(元)', //弹出窗内容
+			'确认支付', //弹出窗title
+			activepay(result),//点确认时
+			function(){
+				$.alert('is callbackCancel');
+			});
+		//result.
+		};
+		
 	//生成订单提交
 	$('#pay').click(function() {
 		//ajax提交订单
-		amount = $("#id").val();
+		var amount = $("#id").val();
 		if (isNaN(amount)) {
 			$.alert("请输入金额");
 			return false;
 		}
 		$.post("/wx/suborder", 
-			   '{
-			   	"amount": amount
-			   }', function(result) {
-			//根据返回值跳出确认域对话框
-			$.confirm(
-				'<br>商户名：水魔力<br>支付金额：' ＋ result.amount + '(元)', //弹出窗内容
-				'确认支付', //弹出窗title
-				activepay(result),//点确认时
-				function(){
-					$.alert('is callbackCancel');
-				});
-			result.
-			},'json');
+			   '{"amount": amount}', subordersuccess, 'json');
 		//点击确认后提交支付
 
 	});
@@ -83,10 +84,10 @@
         'getBrandWCPayRequest', {
             "appId":payinfo.appid,     //公众号名称，由商户传入     
             "timeStamp":payinfo.timestamp,    //时间戳，自1970年以来的秒数     
-            "nonceStr":payinfo.nonce, //随机串     
-            "package":payinfo.prepay_id,//"prepay_id=u802345jgfjsdfgsdg888",     
-            "signType":"MD5",         //微信签名方式：     
-            "paySign":payinfo.sign //微信签名 
+            "nonceStr":payinfo.nonceStr, //随机串     
+            "package":payinfo.package,//"prepay_id=u802345jgfjsdfgsdg888",     
+            "signType":payinfo.signType,         //微信签名方式：     
+            "paySign":payinfo.paySign //微信签名 
         },
         function(res){     
      	  	alert(res);
@@ -98,7 +99,7 @@
         			alert("fail :" + res);
         		}
         }
-    		);
+     );
 	};
 </script>
 </body>
