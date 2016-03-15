@@ -5,8 +5,6 @@ import java.io.InputStreamReader;
 import java.util.Map;
 
 import javax.servlet.AsyncContext;
-import javax.servlet.http.HttpServletRequest;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -43,7 +41,7 @@ public class PublicSPIService extends AbsProcessMessage implements HttpClientCal
 		ApplicationContextManager app = ApplicationContextManager.getInstance();
 		Document resdoc = xml.parse(result.getReplyData());
 		if (loger.isDebugEnabled())
-			loger.debug("receive union order: {}", resdoc.getTextContent());
+			loger.debug("receive union order: {}", xml.getContextString(resdoc));
 		//解析回应结果
 		String code = xml.getNodeContent("/xml/return_code", resdoc);
 		String prepay_id = null;

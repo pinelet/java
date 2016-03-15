@@ -62,12 +62,17 @@
     <async-supported>true</async-supported>
   </servlet>
   <servlet>
+  	<servlet-name>paytest</servlet-name>
+  	<servlet-class>com.pinelet.weixinpay.servlet.WXPayPayTestServlet</servlet-class>
+  </servlet>
+  <servlet>
     <servlet-name>SubmitOrderServer</servlet-name>
     <servlet-class>com.pinelet.weixinpay.servlet.SubmitOrderServer</servlet-class>
     <init-param>
       <param-name>pay.notifyURL</param-name>
       <param-value>http://www.ssjcx.com/pay/wx/recresult</param-value>
     </init-param>
+    <async-supported>true</async-supported>
   </servlet>
   <servlet>
     <servlet-name>VaildService</servlet-name>
@@ -83,8 +88,8 @@
     </init-param>
   </servlet>
   <servlet>
-  	<servlet-name>ReceicePayResult</servlet-name>
-  	<servlet-class>com.pinelet.weixinpay.servlet.ReceicePayResult</servlet-class>
+    <servlet-name>ReceicePayResult</servlet-name>
+    <servlet-class>com.pinelet.weixinpay.servlet.ReceicePayResult</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>MainService</servlet-name>
@@ -107,7 +112,11 @@
     <url-pattern>/wx/suborder</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
-  	<servlet-name>ReceicePayResult</servlet-name>
-  	<url-pattern>/wx/recresult</url-pattern>
+    <servlet-name>ReceicePayResult</servlet-name>
+    <url-pattern>/wx/recresult</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+  	<servlet-name>paytest</servlet-name>
+  	<url-pattern>/paytest</url-pattern>
   </servlet-mapping>
 </web-app>

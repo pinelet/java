@@ -2,11 +2,6 @@ package com.pinelet.weixinpay.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.concurrent.Executor;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -25,7 +20,7 @@ import com.pinelet.weixinpay.util.XMLDocumentService;
 public class MainServer extends HttpServlet {
 	
 	private static final long serialVersionUID = -5257873814413697109L;
-	private Executor executor = null;
+	//private Executor executor = null;
 	private static final int MAXREQ = 2048;
 	private Logger loger = LoggerFactory.getLogger(getClass());
 	/**
@@ -34,7 +29,7 @@ public class MainServer extends HttpServlet {
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
 		
-		executor = new ThreadPoolExecutor(10, 50, 3L, TimeUnit.MINUTES, new LinkedBlockingQueue<Runnable>(300));
+		//executor = new ThreadPoolExecutor(10, 50, 3L, TimeUnit.MINUTES, new LinkedBlockingQueue<Runnable>(300));
 	}
 
 	/**

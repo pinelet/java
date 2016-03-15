@@ -9,10 +9,11 @@ import java.util.Map.Entry;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.XPath;
@@ -22,9 +23,7 @@ import javax.xml.xpath.XPathFactory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
@@ -36,13 +35,18 @@ public class XMLDocumentService {
 	private Logger loger = LoggerFactory.getLogger(getClass());
 	private static XMLDocumentService service = new XMLDocumentService();
 	private XPath xpath = null;
+	private TransformerFactory transFactory = null;
+	private Transformer transFormer = null;
 	
 	private XMLDocumentService() {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		transFactory = TransformerFactory.newInstance(); 
 		try {
 			docbuilder = factory.newDocumentBuilder();
 			xpath = XPathFactory.newInstance().newXPath();
-		} catch (ParserConfigurationException e) {
+			transFormer = transFactory.newTransformer();  
+	        transFormer.setOutputProperty(OutputKeys.ENCODING, "UTF-8"); 
+		} catch (ParserConfigurationException | TransformerConfigurationException e) {
 			loger.error("constructor document failed...", e);
 		}
 	}
@@ -62,10 +66,10 @@ public class XMLDocumentService {
 	}
 	
 	public String createXML(String rootName, Map<String, String> nodes) {
-		StringBuffer xml = new StringBuffer("<" + Optional.of(rootName) + ">");
+		StringBuffer xml = new StringBuffer("<" + Optional.of(rootName).get() + ">");
 		for (Entry<String, String> node : nodes.entrySet()) {
-			xml.append('<').append(Optional.of(node.getKey())).append('>');
-			xml.append(Optional.of(node.getValue()));
+			xml.append('<').append(Optional.of(node.getKey()).get()).append('>');
+			xml.append(Optional.of(node.getValue()).get());
 			xml.append("</").append(node.getKey()).append('>');
 		}
 
@@ -77,8 +81,7 @@ public class XMLDocumentService {
 		try {
 			node = (Node)xpath.evaluate(rule, doc, XPathConstants.NODE);
 		} catch (XPathExpressionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			loger.error("",e);
 		}
 		return node;
 	}
@@ -88,9 +91,20 @@ public class XMLDocumentService {
 		try {
 			node = xpath.evaluate(rule, doc);
 		} catch (XPathExpressionException e) {
-			e.printStackTrace();
+			loger.error("", e);
 		}
 		return node;
+	}
+	
+	public String getContextString(Document doc) {
+		 
+        StringWriter sw = new StringWriter();
+        try {
+			transFormer.transform(new DOMSource(doc), new StreamResult(sw));
+		} catch (TransformerException e) {
+			loger.error("", e);
+		}  
+        return sw.toString();  
 	}
 
 }

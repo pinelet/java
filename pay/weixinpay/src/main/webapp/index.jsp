@@ -37,7 +37,7 @@
 	</div>
 
 	<script src="js/jquery-2.1.4.js"></script>
-	<script type="js/jquery-weui.js"></script>
+	<script src="js/jquery-weui.js"></script>
 	<script type="text/javascript">
 	$.ajaxSetup({cache:false});
 	//支付初始化
@@ -67,13 +67,13 @@
 	//生成订单提交
 	$('#pay').click(function() {
 		//ajax提交订单
-		var amount = $("#id").val();
+		var amount = $("#amount").val();
 		if (isNaN(amount)) {
 			$.alert("请输入金额");
 			return false;
 		}
-		$.post("/wx/suborder", 
-			   '{"amount": amount}', subordersuccess, 'json');
+		$.post("wx/suborder", 
+			   '{"amount":'+ amount +'}', subordersuccess, 'json');
 		//点击确认后提交支付
 
 	});

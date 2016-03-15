@@ -38,6 +38,7 @@ public abstract class AbsProcessMessage {
 	}
 	
 	public AbsProcessMessage(AsyncContext ctx, Map<String, String> infos) {
+		this.ctx = ctx;
 		request = infos;
 	}
 	

@@ -45,7 +45,6 @@ public class ProcessorMsgProvider {
 		return get(infos.get("t"), context, infos);
 	}
 	
-	@SuppressWarnings("unchecked")
 	private static AbsProcessMessage get (String type, AsyncContext context, Object doc) {
 		if (type == null) {
 			try {

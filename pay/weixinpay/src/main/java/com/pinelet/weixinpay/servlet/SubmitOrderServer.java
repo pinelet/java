@@ -49,10 +49,14 @@ public class SubmitOrderServer extends HttpServlet {
 		 BufferedReader in = new BufferedReader(new InputStreamReader(request.getInputStream()));
 		 String line = in.readLine();
 		 if (loger.isDebugEnabled())
-			 loger.debug("get pre order line [{}] ", line);
+			 loger.debug("get pre order line {}", line);
 		 String amount = JSONObject.parseObject(line).getString("amount");
 		 String openid = (String)request.getSession().getAttribute("openid");
 		 String mid = (String)request.getSession().getAttribute("mid");
+		 String reqxml = createContent(mid, openid, userIP, amount);
+		 if (loger.isDebugEnabled())
+			 loger.debug("req union trx xml --{}", reqxml);
+		 //FIXME 生成的IP有问题，return_code[FAIL], return_msg[商户号mch_id与appid不匹配]
 		app.getClient().doAsyncHttpPost(prePayURL, createContent(mid, openid, userIP, amount), new PublicSPIService(request.startAsync()));
 	}
 	

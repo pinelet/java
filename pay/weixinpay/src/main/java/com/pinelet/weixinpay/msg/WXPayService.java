@@ -1,6 +1,7 @@
 package com.pinelet.weixinpay.msg;
 
-import java.util.Map;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 import javax.servlet.AsyncContext;
 import javax.servlet.http.HttpServletRequest;
@@ -9,9 +10,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.JSONObject;
+import com.google.common.io.CharStreams;
 import com.pinelet.common.httpasync.HttpClientCallback;
 import com.pinelet.common.httpasync.HttpClientCallbackResult;
-import com.pinelet.weixinpay.wxservice.ApplicationContextManager;
 
 public class WXPayService extends AbsProcessMessage implements HttpClientCallback {
 	
@@ -22,11 +23,7 @@ public class WXPayService extends AbsProcessMessage implements HttpClientCallbac
 
 	private static Logger loger = LoggerFactory.getLogger("WXPayService");
 	
-	private ApplicationContextManager app = ApplicationContextManager.getInstance();
-	
-	private String createSign() {
-		return null;
-	}
+	//private ApplicationContextManager app = ApplicationContextManager.getInstance();
 
 	@Override
 	public void completed(HttpClientCallbackResult result) {
@@ -43,7 +40,14 @@ public class WXPayService extends AbsProcessMessage implements HttpClientCallbac
 
 	@Override
 	public void failed(HttpClientCallbackResult result) {
-		loger.error("prepay(from code to openid) failed and returncode is {}, replay message [{}]", result.getRetCode(), result.getReplyDataAsString());	
+		String restr = null;
+		try {
+			restr = CharStreams.toString(new InputStreamReader(result.getReplyData()));
+		} catch (IOException e) {
+			loger.error("httpsync is error", e);
+		}
+		loger.error("prepay(from code to openid) failed and returncode is {}, replay message [{}] or [{}]", result.getRetCode(), result.getReplyDataAsString(), restr);
+		ctx.complete();
 	}
 
 }
