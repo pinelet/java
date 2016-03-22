@@ -27,13 +27,24 @@ public class WXPayService extends AbsProcessMessage implements HttpClientCallbac
 
 	@Override
 	public void completed(HttpClientCallbackResult result) {
-		String reData = result.getReplyDataAsString();
+		String reData = null;
+		try {
+			reData = CharStreams.toString(new InputStreamReader(result.getReplyData()));
+		} catch (IOException e) {
+			loger.error("", e);
+			ctx.complete();
+		}
 		JSONObject rejson = JSONObject.parseObject(reData);
 		String openid = null;
-		if (rejson.getString("errcode") == null && (openid = rejson.getString("openid")) != null) {
+		String errcode = null;
+		if ((errcode = rejson.getString("errcode")) == null && (openid = rejson.getString("openid")) != null) {
 			HttpServletRequest httpRequest = (HttpServletRequest)ctx.getRequest();
 			httpRequest.getSession().setAttribute("openid", openid);
 			ctx.dispatch("/index.jsp");
+		}
+		else {
+			loger.error("get openid from code failed, errcode [{}] and errmsg [{}]", errcode, rejson.getString("errmsg"));
+			ctx.complete();
 		}
 		
 	}

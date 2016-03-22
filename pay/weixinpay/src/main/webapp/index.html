@@ -6,6 +6,7 @@
 
 	    <title>订单</title>
 	    <link rel="stylesheet" href="css/weui.css">
+	    <link rel="stylesheet" href="css/jquery-weui.css">
 	    <link rel="stylesheet" href="css/pay.css">
   	</head>
 <body ontouchstart>
@@ -23,17 +24,32 @@
     </div>
 
    	<div class="weui_btn_area">
-        <a class="weui_btn weui_btn_primary" href="javascript:" id="pay">支付</a>
+        <a class="weui_btn weui_btn_primary" href="#" id="pay">支付</a>
     </div>
     <div class="weui_cells_tips">*测试用</div>
 </div>
 
-<script src="js/jquery-2.1.4.js"></script>
-<script type="js/jquery-weui.js"></script>
+<script src="/pay/js/zepto.min.js"></script>
+<script src="/pay/js/jquery-weui.js"></script>
 <script type="text/javascript">
 	//显示一个对话框
-$("#pay").click($.alert("我是一个对话框"));
+/* 	$("#pay").click(function() {
+				$.confirm("我是一个对话框", function() {$.alert("OK");}, function(){$.alert("cacel");});
+			}
+		); */
 	//增加取得设备号显示
+  $(document).on("click", "#pay", function() {
+    $.modal({
+      title: "Hello",
+      text: "我是自定义的modal",
+      buttons: [
+        { text: "支付宝", onClick: function(){ $.alert("你选择了支付宝"); } },
+        { text: "微信支付", onClick: function(){ $.alert("你选择了微信支付"); } },
+        { text: "取消", className: "default"},
+      ]
+    });
+  });
+
 </script>
 </body>
 </html>

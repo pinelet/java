@@ -1,6 +1,8 @@
 package com.pinelet.weixinpay.servlet;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -33,8 +35,14 @@ public class WXPayPayTestServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		doGet(request, response);
+		String str = "{\"timeStamp\":\"1458572764\",\"signType\":\"MD5\",\"package\":\"prepay_id=wx20160321230556278f2318"+
+"910272301788\",\"appid\":\"wxaea199a4b0a6faf8\",\"nonceStr\":\"uKMQLNW6cPOPQRTQQoYVrJi7FDvXjAjw\",\"code\":\"SUCCESS\",\"paySign\":\"193"
++"F56935DCF353CA8EB113BE4C1BE69\"}";
+		response.setContentType("text/html;charset=UTF-8");
+		PrintWriter out = response.getWriter();
+		out.write(str);
+		out.flush();
+		
 	}
 
 }

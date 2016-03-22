@@ -29,7 +29,8 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import com.google.common.collect.Maps;
+import com.beust.jcommander.internal.Maps;
+import com.pinelet.weixinpay.wxservice.ApplicationContextManager;
 
 public class EventMsgTest {
 
@@ -110,6 +111,14 @@ public class EventMsgTest {
 		info.put("return_code", "success");
 		info.put("return_msg", "message" + System.currentTimeMillis()/1000);
 		System.out.print(xpath.evaluate("/xml/return_code", map2xml(info)));
+	}
+	
+	@Test
+	public void map2String() {
+		Map<String, String> map = Maps.newHashMap();
+		map.put("s1", "v1");
+		map.put("s2", "v2");
+		System.out.println(ApplicationContextManager.map2String(map,true));
 	}
 
 }

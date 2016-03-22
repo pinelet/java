@@ -49,10 +49,10 @@ public class PrePayServer extends HttpServlet {
 				//TODO 判断是否存在此设备且设备状态为正常
 				//通过code换取网页授权access_token
 				//appid=APPID&secret=SECRET&code=CODE&grant_type=authorization_code
-				String suffix = ApplicationContextManager.map2String(Maps.newHashMap("appid", app.get(ApplicationContextManager.APPID), 
-																	 "secret", app.get(ApplicationContextManager.APPSECRET),
-																	 "code", code,
-																	 "grant_type","authorization_code"), true);
+				String suffix = new StringBuffer("appid=").append(app.get(ApplicationContextManager.APPID))
+						.append('&').append("secret=").append(app.get(ApplicationContextManager.APPSECRET))
+						.append('&').append("code=").append(code)
+						.append('&').append("grant_type=").append("authorization_code").toString();
 				if (loger.isDebugEnabled()) {
 					loger.debug("req openid from code URL[{}]", accessOpenidUrl + suffix);
 				}

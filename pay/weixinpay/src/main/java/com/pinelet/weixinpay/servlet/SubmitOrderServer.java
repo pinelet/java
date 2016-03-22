@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import com.alibaba.fastjson.JSONObject;
 import com.beust.jcommander.internal.Maps;
 import com.google.common.base.Optional;
+import com.google.common.base.Splitter;
 import com.pinelet.weixinpay.msg.AbsProcessMessage;
 import com.pinelet.weixinpay.msg.PublicSPIService;
 import com.pinelet.weixinpay.util.XMLDocumentService;
@@ -45,6 +46,7 @@ public class SubmitOrderServer extends HttpServlet {
 	 * 统一下单请求
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		response.setContentType("text/html;charset=UTF-8");
 		String userIP = this.getIpAddr(request);
 		 BufferedReader in = new BufferedReader(new InputStreamReader(request.getInputStream()));
 		 String line = in.readLine();
@@ -99,19 +101,26 @@ public class SubmitOrderServer extends HttpServlet {
 	private String getIpAddr(HttpServletRequest request) {      
 
         String ip = request.getHeader("x-forwarded-for");      
-
+        	if (loger.isDebugEnabled())
+        		loger.debug("x-forwarded-for - [{}]", ip);
             if(ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {     
-                ip = request.getHeader("Proxy-Client-IP");      
+                ip = request.getHeader("Proxy-Client-IP");  
+                if (loger.isDebugEnabled())
+            		loger.debug("Proxy-Client-IP - [{}]", ip);
             }     
 
             if(ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {     
                 ip = request.getHeader("WL-Proxy-Client-IP");     
+                if (loger.isDebugEnabled())
+            		loger.debug("WL-Proxy-Client-IP - [{}]", ip);
             }     
 
             if(ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {     
-                ip = request.getRemoteAddr();      
+                ip = request.getRemoteAddr(); 
+                if (loger.isDebugEnabled())
+            		loger.debug("remotAddr - [{}]", ip);
             }   
-       return ip;     
+       return Splitter.on(',').trimResults().splitToList(ip).get(0);     
     }
 
 }
