@@ -1,7 +1,12 @@
 package com.pinelet.weixinpay.servlet;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -12,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.beust.jcommander.internal.Maps;
+import com.google.common.io.CharStreams;
 import com.pinelet.weixinpay.msg.WXPayService;
 import com.pinelet.weixinpay.wxservice.ApplicationContextManager;
 
@@ -23,13 +29,16 @@ public class PrePayServer extends HttpServlet {
 	private static final long serialVersionUID = -8932695729655778308L;
 	Logger loger = LoggerFactory.getLogger(getClass());
 	private ApplicationContextManager app = ApplicationContextManager.getInstance();
-	private static String accessOpenidUrl = "https://api.weixin.qq.com/sns/oauth2/access_token?";
+	private static String accessOpenidUrl = null;
+	private static String verifyUrl = null;
 
 	/**
 	 * @see Servlet#init(ServletConfig)
 	 */
 	public void init(ServletConfig config) throws ServletException {
-		// TODO Auto-generated method stub
+		accessOpenidUrl = config.getInitParameter("access.openid.url");
+		verifyUrl = config.getInitParameter("verify.status.url");
+		
 	}
 
 	/**
@@ -46,7 +55,11 @@ public class PrePayServer extends HttpServlet {
 				String mid = request.getParameter("state");
 				request.getSession().setAttribute("mid", mid);
 				String code = request.getParameter("code");
-				//TODO 判断是否存在此设备且设备状态为正常
+				//判断是否存在此设备且设备状态为正常
+				if (!devValid(mid)) {
+					keepsilence(response, "<p>Device status is abnormal, please contact administrator.</p>");
+					return;
+				}
 				//通过code换取网页授权access_token
 				//appid=APPID&secret=SECRET&code=CODE&grant_type=authorization_code
 				String suffix = new StringBuffer("appid=").append(app.get(ApplicationContextManager.APPID))
@@ -68,6 +81,25 @@ public class PrePayServer extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		doGet(request, response);
+	}
+	
+	private boolean devValid(String imei) {
+		//发起rs请求
+		HttpURLConnection http = null;
+		InputStream input = null;
+		try {
+			http = (HttpURLConnection) new URL(verifyUrl + imei).openConnection();
+			http.setConnectTimeout(30000);
+			http.setReadTimeout(30000); 
+			input = http.getInputStream();
+			return Boolean.parseBoolean(CharStreams.toString(new InputStreamReader(input, "UTF-8")));
+		} catch (IOException e) {
+			loger.error("connection pengda verify url error!", e);
+		} finally {
+			if (input != null)
+				try {input.close();} catch (IOException e) {}
+		}
+		return false;
 	}
 	
 	private void keepsilence(HttpServletResponse response, String message) throws IOException {

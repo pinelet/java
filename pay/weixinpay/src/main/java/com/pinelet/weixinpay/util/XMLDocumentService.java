@@ -25,8 +25,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import com.beust.jcommander.internal.Maps;
 import com.google.common.base.Optional;
 
 public class XMLDocumentService {
@@ -74,6 +76,17 @@ public class XMLDocumentService {
 		}
 
 		return xml.append("</" + rootName + ">").toString();
+	}
+	
+	public Map<String, String> parseXML(String rootName, Document doc) {
+		Map<String, String> map = Maps.newHashMap();
+		Node node = null;
+		NodeList nodes = doc.getElementsByTagName(rootName).item(0).getChildNodes();
+		for (int i = 0; i < nodes.getLength(); i++) {
+			node = nodes.item(i);
+			map.put(node.getNodeName(), node.getTextContent());
+		}
+		return map;
 	}
 	
 	public Node getNode(String rule, Document doc) {

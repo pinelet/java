@@ -85,5 +85,19 @@ public abstract class AbsProcessMessage {
 		//MD5(stringSignTemp).toUpperCase()
 		return signature.toUpperCase();
 	}
+	
+	/**
+	 * 根据微信签名算法验证签名值
+	 * @param pairs
+	 * @param oSign
+	 * @return
+	 */
+	public static boolean verifySignature(Map<String, String> pairs, String oSign) {
+		String ruleNkey = ApplicationContextManager.map2String(pairs, true);
+		String nSign = DigestUtils.md5Hex(ruleNkey + "&key=" + ApplicationContextManager.getInstance().get(ApplicationContextManager.SPIKEY));
+		if (nSign.equalsIgnoreCase(oSign))
+			return true;
+		return false;
+	}
 
 }
