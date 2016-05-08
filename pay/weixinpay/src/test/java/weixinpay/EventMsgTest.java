@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.StringBufferInputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -31,6 +32,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import com.beust.jcommander.internal.Maps;
+import com.pinelet.weixinpay.util.XMLDocumentService;
 import com.pinelet.weixinpay.wxservice.ApplicationContextManager;
 
 public class EventMsgTest {
@@ -39,6 +41,7 @@ public class EventMsgTest {
 	Transformer transfer = null;
 	Logger loger = LoggerFactory.getLogger(getClass());
 	XPath xpath = null;
+	
 	
 	@Before
 	public void setUp() throws Exception {
@@ -49,6 +52,16 @@ public class EventMsgTest {
 
 	@After
 	public void tearDown() throws Exception {
+	}
+	
+	@Test
+	public void testParsexml() {
+		String xml ="<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><xml><appid><![CDATA[wxaea199a4b0a6faf8]]></appid><attach><![CDATA[13611303594]]></attach><bank_type><![CDATA[CFT]]></bank_type><cash_fee><![CDATA[1]]></cash_fee><fee_type><![CDATA[CNY]]></fee_type><is_subscribe><![CDATA[Y]]></is_subscribe><mch_id><![CDATA[1283996101]]></mch_id><nonce_str><![CDATA[Z55KF0tQqpYbo8hXKfEbMsmfXZIKa6Iz]]></nonce_str><openid><![CDATA[o0B3pt_3Ulxw8aJ6WOqwv0h6IxU8]]></openid><out_trade_no><![CDATA[Z55KF0tQqpYbo8hXKfEbMsmfXZIKa6Iz]]></out_trade_no><result_code><![CDATA[SUCCESS]]></result_code><return_code><![CDATA[SUCCESS]]></return_code><sign><![CDATA[969A5A8A05CDEA49325FB490BD0270A3]]></sign><time_end><![CDATA[20160508151034]]></time_end><total_fee>1</total_fee><trade_type><![CDATA[JSAPI]]></trade_type><transaction_id><![CDATA[4007292001201605085634162261]]></transaction_id></xml>";
+		XMLDocumentService xmlservice = XMLDocumentService.getInstance();
+		Document doc = xmlservice.parse(new StringBufferInputStream(xml));
+		Map<String, String> map = xmlservice.parseXML("xml", doc);
+		map.remove("sign");
+		System.out.println(map);
 	}
 
 	/**
@@ -114,9 +127,12 @@ public class EventMsgTest {
 		System.out.print(xpath.evaluate("/xml/return_code", map2xml(info)));
 	}
 	
-	
-	@Test
-	public void testrequesti() throws MalformedURLException, IOException {
+	/**
+	 * 为测试发送设备操作通知到pengda
+	 * @throws MalformedURLException
+	 * @throws IOException
+	 */
+	public void dotestrequesti() throws MalformedURLException, IOException {
 		String notifyUrl = "http://localhost:8080/pengda/rs/pay/act";
 		Map<String, String> result = new HashMap<String, String>();
 		result.put("total_fee", "100");

@@ -28,8 +28,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import com.beust.jcommander.internal.Maps;
 import com.google.common.base.Optional;
+import com.google.common.collect.Maps;
 
 public class XMLDocumentService {
 	
@@ -79,12 +79,14 @@ public class XMLDocumentService {
 	}
 	
 	public Map<String, String> parseXML(String rootName, Document doc) {
-		Map<String, String> map = Maps.newHashMap();
+		Map<String, String> map = Maps.newConcurrentMap();
 		Node node = null;
 		NodeList nodes = doc.getElementsByTagName(rootName).item(0).getChildNodes();
 		for (int i = 0; i < nodes.getLength(); i++) {
 			node = nodes.item(i);
-			map.put(node.getNodeName(), node.getTextContent());
+			//TODO 奇怪的处理
+			if (!"#text".equalsIgnoreCase(node.getNodeName()))
+				map.put(node.getNodeName(), node.getTextContent());
 		}
 		return map;
 	}

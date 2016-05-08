@@ -46,13 +46,18 @@ public class ReceicePayResult extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Document doc = xml.parse(request.getInputStream());
 		if (doc == null)return;
+		if (loger.isDebugEnabled())
+			loger.debug("receive notify result -[{}]", xml.getContextString(doc));
 		Map<String, String> result = xml.parseXML("xml", doc);
 		String signature = result.remove("sign");
 		if (signature == null || "".equals(signature)) return;
 		String code = result.get("return_code");
 		String tCode = result.get("result_code");
 		//验签
-		if (!AbsProcessMessage.verifySignature(result, signature)) return;
+		if (!AbsProcessMessage.verifySignature(result, signature)) {
+			loger.warn("verify signature failed.. result[{}] and signature[{}]", result, signature);
+			return;
+		}
 		//支付成功
 		if (code != null && tCode != null && "SUCCESS".equals(code) && "SUCCESS".equals(tCode)) {
 			//更新支付状态
@@ -88,6 +93,7 @@ public class ReceicePayResult extends HttpServlet {
 		else {
 			String wxOrderID = result.get("transaction_id");
 			String orderID = result.get("out_trade_no");
+			loger.warn("pay result failed... no[{}],return_code[{}],return_msg[{}],result_code[{}]", orderID, code, result.get("return_msg"),tCode );
 		}
 		response.getWriter().println("success");
 		response.flushBuffer();
