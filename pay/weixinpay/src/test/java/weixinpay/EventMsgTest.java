@@ -173,7 +173,12 @@ public class EventMsgTest {
         System.exit(0);
 	}
 	
-	
+	@Test
+	public void float2int() {
+		float n = 0.02f;
+		System.out.println((int)n*100);
+		System.out.println((int)(n*100));
+	}
 	@Test
 	public void map2String() {
 		Map<String, String> map = Maps.newHashMap();

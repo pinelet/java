@@ -28,12 +28,14 @@ import com.pinelet.weixinpay.wxservice.ApplicationContextManager;
  */
 
 public class SubmitOrderServer extends HttpServlet {
-       
+
 	private static final long serialVersionUID = -654405602341609622L;
 	private ApplicationContextManager app = ApplicationContextManager.getInstance();
 	private static String prePayURL = "https://api.mch.weixin.qq.com/pay/unifiedorder";
 	private Logger loger = LoggerFactory.getLogger(getClass());
 	private String notifyurl = null;
+	
+
 	/**
 	 * @see Servlet#init(ServletConfig)
 	 */
@@ -52,14 +54,16 @@ public class SubmitOrderServer extends HttpServlet {
 		 String line = in.readLine();
 		 if (loger.isDebugEnabled())
 			 loger.debug("get pre order line {}", line);
-		 String amount = JSONObject.parseObject(line).getString("amount");
+		 JSONObject form = JSONObject.parseObject(line);
+		 float amount =form.getFloatValue("amount");
+		 int stype = form.getIntValue("sale");
 		 String openid = (String)request.getSession().getAttribute("openid");
 		 String mid = (String)request.getSession().getAttribute("mid");
-		 String reqxml = createContent(mid, openid, userIP, amount);
+		 String reqxml = createContent(mid, openid, userIP, (int)(amount*100), getStype(stype));
 		 if (loger.isDebugEnabled())
 			 loger.debug("req union trx xml --{}", reqxml);
 		 //FIXME 生成的IP有问题，return_code[FAIL], return_msg[商户号mch_id与appid不匹配]
-		app.getClient().doAsyncHttpPost(prePayURL, createContent(mid, openid, userIP, amount), new PublicSPIService(request.startAsync()));
+		app.getClient().doAsyncHttpPost(prePayURL, reqxml, new PublicSPIService(request.startAsync()));
 	}
 	
 	
@@ -80,22 +84,33 @@ public class SubmitOrderServer extends HttpServlet {
 	 * </xml>
 	 * @return
 	 */
-	private String createContent(String mid, String openid, String ip, String amount) {
+	private String createContent(String mid, String openid, String ip, int amount, String stype) {
 		Map<String, String> infos = Maps.newHashMap("appid",app.get(ApplicationContextManager.APPID));
 
 		String randomString = AbsProcessMessage.getRandomString(32);
 		infos.put("attach", mid);//此可以放入设备ＩＤ之类信息
-		infos.put("body","购水");//购水 充值
+		infos.put("body",stype);//购水 充值
 		infos.put("mch_id",app.get(ApplicationContextManager.SHOPID));//商户号
 		infos.put("nonce_str",randomString);
 		infos.put("notify_url",notifyurl);
 		infos.put("openid",Optional.of(openid).get());
 		infos.put("out_trade_no",randomString);//TODO 订单号 ，需要记录订单表
 		infos.put("spbill_create_ip",ip);
-		infos.put("total_fee",amount);
+		infos.put("total_fee",String.valueOf(amount));
 		infos.put("trade_type", "JSAPI");
 		infos.put("sign",AbsProcessMessage.createSignature(infos));
 		return XMLDocumentService.getInstance().createXML("xml", infos);
+	}
+	
+	private String getStype(int code) {
+		switch (code) {
+		case 1:
+			return "充值";
+		case 2:
+			return "购水";
+		default:
+			return "?";
+		}
 	}
 	
 	private String getIpAddr(HttpServletRequest request) {      
